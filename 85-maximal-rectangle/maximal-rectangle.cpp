@@ -1,0 +1,32 @@
+
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        int ans = 0;
+        stack<int> stk;
+        for(int i=0; i<=heights.size(); i++) {
+            while(!stk.empty() && (i == heights.size() || heights[stk.top()] > heights[i])) {
+                int h = heights[stk.top()];
+                stk.pop();
+                int w = stk.empty() ? i:i-stk.top()-1;
+                ans = max(ans, h*w);
+            }
+            stk.push(i);
+        }
+        return ans;
+    }
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        if (matrix.empty()){
+            return 0;
+        }
+        int ans = 0;
+        vector<int> hist(matrix[0].size(), 0);
+        for(int i=0; i<matrix.size(); i++){
+            for(int j=0; j<matrix[i].size(); j++){
+                hist[j] = matrix[i][j] == '0'? 0 : hist[j]+1;
+            }
+            ans = max(ans, largestRectangleArea(hist));
+        }
+        return ans;
+    }
+};
