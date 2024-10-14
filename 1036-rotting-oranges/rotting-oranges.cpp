@@ -1,45 +1,50 @@
 
 class Solution {
 public:
+
+    bool isValidCoord(int x, int y, vector<vector<int>>& grid){
+        return (x>=0 && y>=0 && (x<grid.size()) && (y<grid[0].size()));
+    }
+
     int orangesRotting(vector<vector<int>>& grid) {
-        queue<pair<int,int>> pending;
-        vector<vector<int>> direction = {{0,1},{0,-1},{1,0},{-1,0}};
+        queue<vector<int>> rottenSourceQueue;
         for(int i=0; i<grid.size(); i++){
-        	for(int j=0; j<grid[0].size(); j++){
-        		if(grid[i][j] == 2){
-        			pending.push({i,j});
-        		}
-        	}
+            for(int j=0; j<grid[0].size(); j++){
+                if(grid[i][j] == 2){
+                    rottenSourceQueue.push({i,j});
+                }
+            }
         }
-        int time = 0;
-        while(!pending.empty()){
-        	int len = pending.size();
-        	bool check =0;
-        	for(int k=0; k<len; k++){
-        		int i = pending.front().first;
-        		int j = pending.front().second;
-        		pending.pop();
-        		for(int l=0; l<4; l++){
-        			int x = i + direction[l][0];
-        			int y = j + direction[l][1];
-        			if((x>=0 && x<grid.size()) && (y>=0 && y<grid[0].size()) && grid[x][y] == 1){
-        				grid[x][y] = 2;
-        				check = 1;
-        				pending.push({x,y});
-        			}
-        		}
-        	}
-        	if(check){
-        		time++;
-        	}
+        int timeTaken = 0;
+        vector<vector<int>> direction = {{1,0},{-1,0},{0,1},{0,-1}};
+        while(!rottenSourceQueue.empty()){
+            int currentSize = rottenSourceQueue.size();
+            bool check =0;
+            for(int i=0; i<currentSize; i++){
+                vector<int> coords = rottenSourceQueue.front();
+                rottenSourceQueue.pop();
+                for(int k=0; k<4; k++){
+                    int x = coords[0] + direction[k][0];
+                    int y = coords[1] + direction[k][1];
+                    if(isValidCoord(x,y,grid) && grid[x][y] == 1){
+                        grid[x][y] = 2;
+                        check =1;
+                        rottenSourceQueue.push({x,y});
+                    }
+                }
+            }
+            if(check){
+                timeTaken++;
+            }
         }
-        for(int i=0; i<grid.size(); i++){
-        	for(int j=0; j<grid[0].size(); j++){
-        		if(grid[i][j] == 1){
-        			return -1;
-        		}
-        	}
+
+         for(int i=0; i<grid.size(); i++){
+            for(int j=0; j<grid[0].size(); j++){
+                if(grid[i][j] == 1){
+                    return -1; 
+                }
+            }
         }
-        return time;
+        return timeTaken;
     }
 };
