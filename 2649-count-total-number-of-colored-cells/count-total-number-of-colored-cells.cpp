@@ -1,16 +1,20 @@
 class Solution {
 public:
 
-    long long calchelper(int n){
+    long long calchelper(int n, vector<long long>& dp){
         if(n<=1){
             return 1;
         }
+        if(dp[n] != -1){
+            return dp[n];
+        }
 
-        long long ans = 4*(n-1) + calchelper(n-1);
-        return ans;
+        dp[n] = 4*(n-1) + calchelper(n-1,dp);
+        return dp[n];
     }
 
     long long coloredCells(int n) {
-        return calchelper(n);
+        vector<long long> dp(n+1,-1);
+        return calchelper(n,dp);
     }
 };
